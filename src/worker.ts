@@ -2,6 +2,7 @@ import type { ApplicationService } from '@adonisjs/core/types'
 import cron from 'node-cron'
 import AsyncLock from 'async-lock'
 import { FsLoader, type BaseCommand, Kernel } from '@adonisjs/core/ace'
+import redis from '@adonisjs/redis/services/main'
 
 const lock = new AsyncLock()
 
@@ -9,10 +10,19 @@ interface IRunOptions {
   enabled: boolean
   timeout: number
   key: string
+  isOneService: boolean
   onBusy?: () => any | PromiseLike<any>
 }
 
 const run = async (cb: () => any | PromiseLike<any>, options: IRunOptions) => {
+
+  if(options.isOneService) {
+    const lockKey = 'scheduler:lock:' + options.key
+    const ttl = 10 // 锁的有效期（秒）
+    const acquired = await redis.set(lockKey, true, 'EX', ttl, 'NX')
+    if (!acquired) return
+  }
+
   if (!options.enabled) return await cb()
 
   if (lock.isBusy(options.key)) {

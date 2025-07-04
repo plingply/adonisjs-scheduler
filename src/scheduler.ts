@@ -21,10 +21,16 @@ export abstract class BaseSchedule {
     withoutOverlapping: false,
     expiresAt: 3600000,
     timezone: undefined as string | undefined,
+    isOneService: false,
   }
 
   beforeCallbacks: (() => Promise<void>)[] = []
   afterCallbacks: (() => Promise<void>)[] = []
+
+  public onOneService() {
+    this.config.isOneService = true
+    return this
+  }
 
   public before(callback: () => Promise<void>) {
     this.beforeCallbacks.push(callback)
