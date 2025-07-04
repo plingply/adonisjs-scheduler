@@ -7,10 +7,10 @@ import redis from '@adonisjs/redis/services/main'
 const lock = new AsyncLock()
 
 interface IRunOptions {
+  isOneService: boolean
   enabled: boolean
   timeout: number
   key: string
-  isOneService: boolean
   onBusy?: () => any | PromiseLike<any>
 }
 
@@ -19,7 +19,7 @@ const run = async (cb: () => any | PromiseLike<any>, options: IRunOptions) => {
   if(options.isOneService) {
     const lockKey = 'scheduler:lock:' + options.key
     const ttl = 10 // 锁的有效期（秒）
-    const acquired = await redis.set(lockKey, true, 'EX', ttl, 'NX')
+    const acquired = await redis.set(lockKey, '1', 'EX', ttl, 'NX')
     if (!acquired) return
   }
 
@@ -89,6 +89,7 @@ export class Worker {
                     await callback()
                   }
                   await run(() => ace.exec(command.commandName, command.commandArgs), {
+                    isOneService: command.config.isOneService,
                     enabled: command.config.withoutOverlapping,
                     timeout: command.config.expiresAt,
                     key: `${index}-${command.commandName}-${command.commandArgs}`,
@@ -108,6 +109,7 @@ export class Worker {
                     await callback()
                   }
                   await run(() => command.callback(), {
+                    isOneService: command.config.isOneService,
                     enabled: command.config.withoutOverlapping,
                     timeout: command.config.expiresAt,
                     key: `${index}-callback`,

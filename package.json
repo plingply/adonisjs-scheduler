@@ -1,8 +1,8 @@
 {
-  "name": "adonisjs-scheduler",
-  "version": "2.4.0",
+  "name": "adonisjs6-scheduler",
+  "version": "1.0.0",
   "description": "Task scheduler for AdonisJS",
-  "homepage": "https://github.com/KABBOUCHI/adonisjs-scheduler#readme",
+  "homepage": "https://github.com/plingply/adonisjs-scheduler",
   "license": "MIT",
   "keywords": [
     "adonisjs",
@@ -34,6 +34,7 @@
     "@adonisjs/core": "^6.2.0",
     "@adonisjs/eslint-config": "^1.2.1",
     "@adonisjs/prettier-config": "^1.2.1",
+    "@adonisjs/redis": "^9.2.0",
     "@adonisjs/tsconfig": "^1.2.1",
     "@japa/assert": "^4.0.0",
     "@japa/runner": "^3.1.4",
