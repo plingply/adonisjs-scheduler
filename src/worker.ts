@@ -2,7 +2,7 @@ import type { ApplicationService } from '@adonisjs/core/types'
 import cron from 'node-cron'
 import AsyncLock from 'async-lock'
 import { FsLoader, type BaseCommand, Kernel } from '@adonisjs/core/ace'
-import redis from '@adonisjs/redis/services/main'
+
 
 const lock = new AsyncLock()
 
@@ -14,13 +14,15 @@ interface IRunOptions {
   onBusy?: () => any | PromiseLike<any>
 }
 
-const run = async (cb: () => any | PromiseLike<any>, options: IRunOptions) => {
+const run = async (cb: () => any | PromiseLike<any>, options: IRunOptions, app: any) => {
 
   if(options.isOneService) {
+    const redis = await app.container.make('redis')
     const lockKey = 'scheduler:lock:' + options.key
     const ttl = 10 // 锁的有效期（秒）
-    const acquired = await redis.set(lockKey, '1', 'EX', ttl, 'NX')
-    if (!acquired) return
+    const acquired = redis.set(lockKey, '1', 'EX', ttl, 'NX')
+    // if (!acquired) return
+    console.log(lockKey, acquired)
   }
 
   if (!options.enabled) return await cb()
@@ -98,7 +100,7 @@ export class Worker {
                         `Command ${index}-${command.commandName}-${command.commandArgs} is busy`
                       )
                     },
-                  })
+                  }, this.app)
                   for (const callback of command.afterCallbacks) {
                     await callback()
                   }
@@ -116,7 +118,7 @@ export class Worker {
                     onBusy: () => {
                       logger.warn(`Callback ${index} is busy`)
                     },
-                  })
+                  }, this.app)
                   for (const callback of command.afterCallbacks) {
                     await callback()
                   }
