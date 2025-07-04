@@ -1,6 +1,6 @@
 {
   "name": "adonisjs6-scheduler",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Task scheduler for AdonisJS",
   "homepage": "https://github.com/plingply/adonisjs-scheduler",
   "license": "MIT",
@@ -56,10 +56,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KABBOUCHI/adonisjs-scheduler.git"
+    "url": "git+https://github.com/plingply/adonisjs-scheduler.git"
   },
   "bugs": {
-    "url": "https://github.com/KABBOUCHI/adonisjs-scheduler/issues"
+    "url": "https://github.com/plingply/adonisjs-scheduler/issues"
   },
   "eslintConfig": {
     "extends": "@adonisjs/eslint-config/package"

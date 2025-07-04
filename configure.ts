@@ -22,8 +22,8 @@ export async function configure(command: ConfigureCommand) {
 
 
     await codemods.updateRcFile((rcFile: any) => {
-        rcFile.addProvider('adonisjs-scheduler/scheduler_provider', ['console'])
-        rcFile.addCommand('adonisjs-scheduler/commands')
+        rcFile.addProvider('adonisjs6-scheduler/scheduler_provider', ['console'])
+        rcFile.addCommand('adonisjs6-scheduler/commands')
         rcFile.addPreloadFile('#start/scheduler', ['console'])
     })
 }

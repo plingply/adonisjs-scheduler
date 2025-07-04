@@ -4,22 +4,22 @@
   <p>Task scheduler for AdonisJS v6</p>
 
   <p>
-    <a href="https://npmjs.org/package/adonisjs-scheduler" target="_blank">
-      <img alt="npm" src="https://img.shields.io/npm/v/adonisjs-scheduler.svg?style=for-the-badge&logo=npm" />
+    <a href="https://npmjs.org/package/adonisjs6-scheduler" target="_blank">
+      <img alt="npm" src="https://img.shields.io/npm/v/adonisjs6-scheduler.svg?style=for-the-badge&logo=npm" />
     </a>
-    <a href="https://github.com/KABBOUCHI/adonisjs-scheduler/blob/master/LICENSE.md" target="_blank">
-      <img alt="License: MIT" src="https://img.shields.io/npm/l/adonisjs-scheduler?color=blueviolet&style=for-the-badge" />
+    <a href="https://github.com/KABBOUCHI/adonisjs6-scheduler/blob/master/LICENSE.md" target="_blank">
+      <img alt="License: MIT" src="https://img.shields.io/npm/l/adonisjs6-scheduler?color=blueviolet&style=for-the-badge" />
     </a>
     <img alt="Typescript" src="https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript" />
   </p>
 </div>
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/KABBOUCHI/adonisjs-scheduler/master/example.png" alt="Scheduler code example">
+    <img src="https://raw.githubusercontent.com/KABBOUCHI/adonisjs6-scheduler/master/example.png" alt="Scheduler code example">
 </p>
 
 <aside class="notice">
-  <a href="https://github.com/KABBOUCHI/adonisjs-scheduler/tree/0.x">For AdonisJS v5 use 0.x branch</a>
+  <a href="https://github.com/KABBOUCHI/adonisjs6-scheduler/tree/0.x">For AdonisJS v5 use 0.x branch</a>
 </aside>
 
 ## Installation
@@ -27,7 +27,7 @@
 Install the package from npm using the following command:
 
 ```bash
-node ace add adonisjs-scheduler
+node ace add adonisjs6-scheduler
 ```
 
 ## Running The Scheduler
@@ -46,7 +46,7 @@ node ace scheduler:run --watch
 ```ts
 // start/scheduler.ts
 
-import scheduler from 'adonisjs-scheduler/services/main'
+import scheduler from 'adonisjs6-scheduler/services/main'
 
 import PurgeUsers from '../commands/purge_users'
 
@@ -72,7 +72,7 @@ or define schedule directly on command
 
 ```ts
 import { BaseCommand, args } from '@adonisjs/core/ace'
-import { schedule } from 'adonisjs-scheduler'
+import { schedule } from 'adonisjs6-scheduler'
 
 @schedule("* * * * *", ["30 days"])
 @schedule((s) => s.everyFiveSeconds().immediate(), ["7 days"])
@@ -137,7 +137,7 @@ export default class PurgeUsers extends BaseCommand {
 Besides using `node ace scheduler:run`, you can also manually initialize and control the scheduler worker in your code:
 
 ```ts
-import { Worker } from 'adonisjs-scheduler'
+import { Worker } from 'adonisjs6-scheduler'
 import app from '@adonisjs/core/services/app'
 
 const worker = new Worker(app)
@@ -158,11 +158,11 @@ import { defineConfig } from '@adonisjs/core/app'
 export default defineConfig({
  providers: [
    {
-      file: () => import('adonisjs-scheduler/scheduler_provider'),
+      file: () => import('adonisjs6-scheduler/scheduler_provider'),
       environment: ['console', 'web'], // <---
    },
 
    // or enable for all environments
-   () => import('adonisjs-scheduler/scheduler_provider'),
+   () => import('adonisjs6-scheduler/scheduler_provider'),
 })
 ```

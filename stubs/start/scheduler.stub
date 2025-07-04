@@ -2,7 +2,7 @@
   exports({ to: app.startPath('scheduler.ts') })
 }}}
 
-import scheduler from 'adonisjs-scheduler/services/main'
+import scheduler from 'adonisjs6-scheduler/services/main'
 
 scheduler.command("inspire").everyFiveSeconds();
 
