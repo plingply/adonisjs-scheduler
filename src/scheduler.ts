@@ -22,13 +22,15 @@ export abstract class BaseSchedule {
     expiresAt: 3600000,
     timezone: undefined as string | undefined,
     isOneService: false,
+    redisTTL: 5,
   }
 
   beforeCallbacks: (() => Promise<void>)[] = []
   afterCallbacks: (() => Promise<void>)[] = []
 
-  public onOneService() {
+  public onOneService(redisTTL: number = 5) {
     this.config.isOneService = true
+    this.config.redisTTL = redisTTL
     return this
   }
 

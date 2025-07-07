@@ -1,6 +1,6 @@
 {
   "name": "adonisjs6-scheduler",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "Task scheduler for AdonisJS",
   "homepage": "https://github.com/plingply/adonisjs-scheduler",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "crons"
   ],
   "type": "module",
-  "author": "Georges KABBOUCHI <georges.kabbouchi@gmail.com>",
+  "author": "",
   "main": "build/providers/scheduler_provider.js",
   "files": [
     "build"

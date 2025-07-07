@@ -3,11 +3,11 @@ import cron from 'node-cron'
 import AsyncLock from 'async-lock'
 import { FsLoader, type BaseCommand, Kernel } from '@adonisjs/core/ace'
 
-
 const lock = new AsyncLock()
 
 interface IRunOptions {
   isOneService: boolean
+  redisTTL: number
   enabled: boolean
   timeout: number
   key: string
@@ -15,14 +15,12 @@ interface IRunOptions {
 }
 
 const run = async (cb: () => any | PromiseLike<any>, options: IRunOptions, app: any) => {
-
-  if(options.isOneService) {
+  if (options.isOneService) {
     const redis = await app.container.make('redis')
     const lockKey = 'scheduler:lock:' + options.key
-    const ttl = 10 // 锁的有效期（秒）
-    const acquired = redis.set(lockKey, '1', 'EX', ttl, 'NX')
-    // if (!acquired) return
-    console.log(lockKey, acquired)
+    const ttl = options.redisTTL // 锁的有效期（秒）
+    const acquired = await redis.set(lockKey, '1', 'EX', ttl, 'NX')
+    if (!acquired) return
   }
 
   if (!options.enabled) return await cb()
@@ -90,17 +88,22 @@ export class Worker {
                   for (const callback of command.beforeCallbacks) {
                     await callback()
                   }
-                  await run(() => ace.exec(command.commandName, command.commandArgs), {
-                    isOneService: command.config.isOneService,
-                    enabled: command.config.withoutOverlapping,
-                    timeout: command.config.expiresAt,
-                    key: `${index}-${command.commandName}-${command.commandArgs}`,
-                    onBusy: () => {
-                      logger.warn(
-                        `Command ${index}-${command.commandName}-${command.commandArgs} is busy`
-                      )
+                  await run(
+                    () => ace.exec(command.commandName, command.commandArgs),
+                    {
+                      isOneService: command.config.isOneService,
+                      redisTTL: command.config.redisTTL,
+                      enabled: command.config.withoutOverlapping,
+                      timeout: command.config.expiresAt,
+                      key: `${index}-${command.commandName}-${command.commandArgs}`,
+                      onBusy: () => {
+                        logger.warn(
+                          `Command ${index}-${command.commandName}-${command.commandArgs} is busy`
+                        )
+                      },
                     },
-                  }, this.app)
+                    this.app
+                  )
                   for (const callback of command.afterCallbacks) {
                     await callback()
                   }
@@ -110,15 +113,20 @@ export class Worker {
                   for (const callback of command.beforeCallbacks) {
                     await callback()
                   }
-                  await run(() => command.callback(), {
-                    isOneService: command.config.isOneService,
-                    enabled: command.config.withoutOverlapping,
-                    timeout: command.config.expiresAt,
-                    key: `${index}-callback`,
-                    onBusy: () => {
-                      logger.warn(`Callback ${index} is busy`)
+                  await run(
+                    () => command.callback(),
+                    {
+                      isOneService: command.config.isOneService,
+                      redisTTL: command.config.redisTTL,
+                      enabled: command.config.withoutOverlapping,
+                      timeout: command.config.expiresAt,
+                      key: `${index}-callback`,
+                      onBusy: () => {
+                        logger.warn(`Callback ${index} is busy`)
+                      },
                     },
-                  }, this.app)
+                    this.app
+                  )
                   for (const callback of command.afterCallbacks) {
                     await callback()
                   }
